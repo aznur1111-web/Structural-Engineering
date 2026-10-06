@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Aznur Civil Studio - building-focused structural engineering calculator, estimator and reference toolbox.">
+<meta name="theme-color" content="#fafafa">
+<title>Aznur Civil Studio - Structural & Building Engineering</title>
+<style>
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #f5f5f4;
+  --border: #e7e5e4;
+  --text: #1c1917;
+  --muted: #57534e;
+  --accent: #f59e0b;
+  --accent-hover: #d97706;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .05);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.container {
+  width: min(1320px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 34px 0 55px;
+}
+
+header {
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 8px;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.subtitle {
+  max-width: 880px;
+  margin: 0 auto;
+  color: var(--muted);
+}
+
+.warning {
+  margin: 18px auto 0;
+  max-width: 1000px;
+  padding: 12px 14px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: var(--radius);
+  color: #78350f;
+  font-size: .84rem;
+  text-align: left;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.btn {
+  padding: 9px 16px;
+  background: var(--text);
+  color: #fff;
+  border-radius: var(--radius);
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #33302e;
+}
+
+.btn.secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn.secondary:hover {
+  background: var(--surface-2);
+}
+
+.btn.accent {
+  background: var(--accent);
+}
+
+.btn.accent:hover {
+  background: var(--accent-hover);
+}
+
+.btn.sm {
+  padding: 6px 11px;
+  font-size: .82rem;
+}
+
+.btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.sidebar {
+  position: sticky;
+  top: 14px;
+}
+
+.card {
+  margin-bottom: 18px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.nav-card {
+  padding: 10px;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.category-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 9px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: left;
+}
+
+.category-btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.category-btn.active {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #92400e;
+  font-weight: 700;
+}
+
+.category-count {
+  min-width: 26px;
+  padding: 1px 6px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  font-size: .72rem;
+  text-align: center;
+}
+
+.main {
+  min-width: 0;
+}
+
+.topbar {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 240px) minmax(220px, 320px);
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+label,
+.lbl {
+  color: var(--muted);
+  font-size: .73rem;
+  font-weight: 750;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 9px 11px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.note,
+.hint {
+  color: var(--muted);
+  font-size: .76rem;
+}
+
+.tool-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.tool-header h2 {
+  font-size: 1.22rem;
+}
+
+.badge {
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: #fffbeb;
+  color: #92400e;
+  font-size: .67rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.input-grid.cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.input-grid.cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.results {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.result-card {
+  padding: 13px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.result-card .result-label {
+  color: var(--muted);
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.result-card .result-value {
+  margin-top: 3px;
+  font-size: 1.13rem;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.result-card.primary {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.formula {
+  margin-top: 14px;
+  padding: 12px 13px;
+  background: #fafaf9;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .8rem;
+  white-space: pre-wrap;
+}
+
+.reference-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.reference {
+  padding: 13px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.reference h4 {
+  margin-bottom: 5px;
+}
+
+.reference p {
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .83rem;
+}
+
+th,
+td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: var(--surface-2);
+  font-size: .71rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.hidden {
+  display: none !important;
+}
+
+footer {
+  margin-top: 40px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: .78rem;
+  text-align: center;
+}
+
+.toast-wrap {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: min(360px, calc(100vw - 30px));
+}
+
+.toast {
+  padding: 10px 13px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--success);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 16px rgba(0,0,0,.10);
+  font-size: .82rem;
+}
+
+.toast.warn {
+  border-left-color: var(--warning);
+}
+
+.toast.err {
+  border-left-color: var(--error);
+}
+
+.kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--surface);
+  font-family: ui-monospace, monospace;
+  font-size: .7rem;
+}
+
+@media (max-width: 980px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .category-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .input-grid,
+  .input-grid.cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .container {
+    width: min(100% - 20px, 1320px);
+    padding-top: 22px;
+  }
+
+  .category-list,
+  .input-grid,
+  .input-grid.cols-2,
+  .input-grid.cols-4,
+  .results,
+  .reference-grid,
+  .topbar {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 15px;
+  }
+}
+
+@media print {
+  .toolbar,
+  .sidebar,
+  .topbar,
+  .actions,
+  .warning {
+    display: none !important;
+  }
+
+  .shell {
+    display: block;
+  }
+
+  .card {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}
+</style>
+</head>
+<body>
+<div class="toast-wrap" id="toasts"></div>
+<div class="container">
+  <header>
+    <h1>Aznur Civil Studio</h1>
+    <p class="subtitle">
+      Building-focused structural engineering calculations, quantities, loads,
+      materials, foundations, wind/seismic checks, geometry and estimating -
+      all locally in your browser.
+    </p>
+    <div class="warning">
+      <strong>Engineering safety notice:</strong>
+      This is a preliminary calculation and learning tool. Building design must
+      be checked against the governing code, actual site investigation,
+      material certificates, approved drawings, load combinations, detailing
+      requirements and a qualified structural engineer before construction.
+      Code-specific design provisions are intentionally not presented as a
+      substitute for the governing standard.
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <button class="btn secondary sm" id="copyReport">Copy Results</button>
+    <button class="btn secondary sm" id="printReport">Print / PDF</button>
+    <button class="btn secondary sm" id="saveProject">Save Project</button>
+    <button class="btn secondary sm" id="loadProject">Load Project</button>
+    <button class="btn secondary sm" id="clearProject">Clear Saved Project</button>
+  </div>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="card nav-card">
+        <div class="lbl" style="padding: 6px 8px 9px">Engineering Sections</div>
+        <div class="category-list" id="categoryList"></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom: 8px">Reference Codes</h3>
+        <p class="note">
+          BNBC 2020 · ACI 318 · AISC · ASCE 7 · Eurocodes · local authority
+          requirements. Verify the edition and jurisdiction before design.
+        </p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="field">
+          <label for="search">Find a calculator</label>
+          <input id="search" type="search" placeholder="Try: beam, footing, rebar, wind, brick, BOQ…">
+        </div>
+        <div class="field">
+          <label for="sectionSelect">Section</label>
+          <select id="sectionSelect"></select>
+        </div>
+        <div class="field">
+          <label for="toolSelect">Calculator</label>
+          <select id="toolSelect"></select>
+        </div>
+      </div>
+
+      <section class="card" id="toolCard">
+        <div class="tool-header">
+          <div>
+            <div class="badge" id="toolCategory">Building Geometry</div>
+            <h2 id="toolTitle">Select a calculator</h2>
+          </div>
+          <span class="note" id="toolIndex"></span>
+        </div>
+        <div id="toolDescription" class="note" style="margin-bottom: 15px"></div>
+        <div id="toolInputs"></div>
+        <div class="actions">
+          <button class="btn accent" id="calculate">Calculate</button>
+          <button class="btn secondary" id="resetTool">Reset</button>
+          <button class="btn secondary" id="copyFormula">Copy Formula</button>
+        </div>
+        <div id="results" class="results"></div>
+        <div id="formula" class="formula hidden"></div>
+      </section>
+
+      <section class="card">
+        <div class="tool-header">
+          <div>
+            <div class="badge">Reference</div>
+            <h2>High-value structural formulas</h2>
+          </div>
+        </div>
+        <div class="reference-grid" id="references"></div>
+      </section>
+
+      <section class="card">
+        <div class="tool-header">
+          <div>
+            <div class="badge">Project Notes</div>
+            <h2>Calculation notes</h2>
+          </div>
+        </div>
+        <textarea id="projectNotes" placeholder="Project name, assumptions, soil data, code edition, material strengths, load cases, drawing references, etc."></textarea>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <p>Aznur Civil Studio · Local-first building and structural engineering toolbox.</p>
+    <p style="margin-top: 4px">
+      Use governing project specifications and code provisions for final design.
+      Never rely on a calculator alone for life-safety decisions.
+    </p>
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+const C = {
+  g: 9.80665,
+  pi: Math.PI,
+  rhoWater: 1000,
+  rhoConcrete: 2400,
+  rhoSteel: 7850,
+  rhoBrick: 1800,
+  rhoMortar: 2100,
+};
+
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const n = (v, fallback = 0) => {
+  const x = Number(v);
+  return Number.isFinite(x) ? x : fallback;
+};
+const fmt = (v, digits = 3) => {
+  if (!Number.isFinite(v)) return "-";
+  const abs = Math.abs(v);
+  if (abs !== 0 && (abs >= 1e7 || abs < 1e-6)) {
+    return v.toExponential(4);
+  }
+  return Number(v.toFixed(digits)).toLocaleString(undefined, {
+    maximumFractionDigits: digits,
+  });
+};
+const area = (w, l) => w * l;
+const volume = (a, b, c) => a * b * c;
+const deg = (rad) => rad * 180 / Math.PI;
+const rad = (d) => d * Math.PI / 180;
+const rebarDia = (d) => Math.PI * d * d / 4;
+const rebarWtKgM = (d) => d * d / 162;
+const safeDiv = (a, b) => Math.abs(b) < 1e-12 ? NaN : a / b;
+const sum = (arr) => arr.reduce((a, b) => a + b, 0);
+
+function F(key, label, def = 1, unit = "", options = {}) {
+  return {
+    key,
+    label,
+    def,
+    unit,
+    min: options.min,
+    max: options.max,
+    step: options.step || "any",
+    hint: options.hint || "",
+  };
+}
+
+function T(key, label, options = {}) {
+  return {
+    key,
+    label,
+    type: "select",
+    def: options.def ?? options.choices?.[0]?.[0],
+    choices: options.choices || [],
+    hint: options.hint || "",
+  };
+}
+
+function tool(id, category, title, description, fields, calc, formula, notes = "") {
+  return { id, category, title, description, fields, calc, formula, notes };
+}
+
+const TOOLS = [
+  // -----------------------------------------------------------------------
+  // BUILDING GEOMETRY & PLANNING
+  // -----------------------------------------------------------------------
+  tool("floor-area", "Building Geometry", "Floor area", "Area of a rectangular floor, room or slab panel.", [
+    F("l", "Length", 6, "m", { min: 0.01 }),
+    F("w", "Width", 4, "m", { min: 0.01 }),
+  ], ({ l, w }) => [{ label: "Floor area", value: area(l, w), unit: "m²" }], "A = L × W"),
+
+  tool("wall-area", "Building Geometry", "Net wall area", "Wall surface area after subtracting door and window openings.", [
+    F("l", "Wall length", 12, "m", { min: 0.01 }),
+    F("h", "Wall height", 3, "m", { min: 0.01 }),
+    F("openings", "Total openings", 4, "m²", { min: 0 }),
+  ], ({ l, h, openings }) => [{ label: "Net wall area", value: Math.max(0, l * h - openings), unit: "m²" }], "A_net = L × H − A_openings"),
+
+  tool("box-volume", "Building Geometry", "Rectangular volume", "Volume of a room, footing, beam, column or excavation block.", [
+    F("l", "Length", 5, "m", { min: 0.001 }),
+    F("w", "Width", 3, "m", { min: 0.001 }),
+    F("h", "Height / depth", 0.25, "m", { min: 0.001 }),
+  ], ({ l, w, h }) => [{ label: "Volume", value: l * w * h, unit: "m³" }], "V = L × W × H"),
+
+  tool("slab-volume", "Building Geometry", "Slab concrete volume", "Concrete volume including an optional waste allowance.", [
+    F("l", "Slab length", 10, "m", { min: 0.01 }),
+    F("w", "Slab width", 8, "m", { min: 0.01 }),
+    F("t", "Thickness", 0.125, "m", { min: 0.01 }),
+    F("waste", "Waste", 3, "%", { min: 0 }),
+  ], ({ l, w, t, waste }) => {
+    const v = l * w * t;
+    return [
+      { label: "Net concrete", value: v, unit: "m³" },
+      { label: "Order quantity", value: v * (1 + waste / 100), unit: "m³" },
+    ];
+  }, "V = L × W × t; V_order = V × (1 + waste)"),
+
+  tool("roof-flat-area", "Building Geometry", "Flat roof area", "Plan roof area with a waste factor for waterproofing or membrane coverage.", [
+    F("l", "Roof length", 12, "m", { min: 0.01 }),
+    F("w", "Roof width", 10, "m", { min: 0.01 }),
+    F("waste", "Coverage allowance", 8, "%", { min: 0 }),
+  ], ({ l, w, waste }) => [{ label: "Roof coverage", value: l * w * (1 + waste / 100), unit: "m²" }], "A_order = L × W × (1 + waste)"),
+
+  tool("gable-roof-area", "Building Geometry", "Gable roof area", "Two-slope roof surface area from building width, slope rise and length.", [
+    F("width", "Building width", 10, "m", { min: 0.01 }),
+    F("rise", "Roof rise", 2, "m", { min: 0 }),
+    F("length", "Roof length", 12, "m", { min: 0.01 }),
+  ], ({ width, rise, length }) => {
+    const rafter = Math.hypot(width / 2, rise);
+    const slope = Math.atan2(rise, width / 2);
+    return [
+      { label: "One rafter slope", value: rafter, unit: "m" },
+      { label: "Roof area", value: 2 * rafter * length, unit: "m²" },
+      { label: "Roof angle", value: deg(slope), unit: "°" },
+    ];
+  }, "rafter = √((W/2)² + rise²); A = 2 × rafter × L"),
+
+  tool("site-coverage", "Building Geometry", "Site coverage", "Building footprint as a percentage of plot area.", [
+    F("footprint", "Building footprint", 160, "m²", { min: 0 }),
+    F("site", "Site area", 400, "m²", { min: 0.01 }),
+  ], ({ footprint, site }) => [{ label: "Site coverage", value: footprint / site * 100, unit: "%" }], "Coverage = footprint / site area × 100"),
+
+  tool("far", "Building Geometry", "Floor area ratio (FAR)", "Total gross floor area divided by site area.", [
+    F("gfa", "Gross floor area", 900, "m²", { min: 0 }),
+    F("site", "Site area", 400, "m²", { min: 0.01 }),
+  ], ({ gfa, site }) => [{ label: "FAR", value: gfa / site, unit: "" }], "FAR = GFA / site area"),
+
+  tool("building-volume", "Building Geometry", "Building volume", "Approximate enclosed volume for preliminary thermal, cost or mass estimates.", [
+    F("footprint", "Footprint", 250, "m²", { min: 0 }),
+    F("height", "Average height", 18, "m", { min: 0 }),
+  ], ({ footprint, height }) => [{ label: "Building volume", value: footprint * height, unit: "m³" }], "V ≈ footprint × average height"),
+
+  tool("slope-percent", "Building Geometry", "Slope / gradient", "Convert rise and horizontal run to slope percentage and angle.", [
+    F("rise", "Rise", 1, "m", { min: 0 }),
+    F("run", "Run", 10, "m", { min: 0.001 }),
+  ], ({ rise, run }) => [{ label: "Slope", value: rise / run * 100, unit: "%" }, { label: "Angle", value: deg(Math.atan2(rise, run)), unit: "°" }], "slope% = rise/run × 100"),
+
+  tool("stair-geometry", "Building Geometry", "Stair geometry", "Estimate riser count, riser height, going, horizontal run and stair angle.", [
+    F("floor", "Floor-to-floor height", 3.2, "m", { min: 0.1 }),
+    F("riser", "Target riser", 0.16, "m", { min: 0.05 }),
+    F("going", "Going", 0.28, "m", { min: 0.1 }),
+  ], ({ floor, riser, going }) => {
+    const count = Math.max(1, Math.round(floor / riser));
+    const actual = floor / count;
+    return [
+      { label: "Risers", value: count, unit: "" },
+      { label: "Actual riser", value: actual, unit: "m" },
+      { label: "Horizontal run", value: Math.max(0, count - 1) * going, unit: "m" },
+      { label: "Stair angle", value: deg(Math.atan2(actual, going)), unit: "°" },
+      { label: "2R + G", value: 2 * actual + going, unit: "m" },
+    ];
+  }, "n ≈ round(H/R); R_actual = H/n; run ≈ (n−1)G"),
+
+  tool("ramp", "Building Geometry", "Ramp geometry", "Calculate slope, horizontal run and ramp length.", [
+    F("rise", "Rise", 0.6, "m", { min: 0 }),
+    F("slope", "Target slope", 8, "%", { min: 0.01 }),
+  ], ({ rise, slope }) => {
+    const run = rise / (slope / 100);
+    return [{ label: "Horizontal run", value: run, unit: "m" }, { label: "Ramp length", value: Math.hypot(run, rise), unit: "m" }, { label: "Angle", value: deg(Math.atan2(rise, run)), unit: "°" }];
+  }, "run = rise / slope; length = √(run² + rise²)"),
+
+  // -----------------------------------------------------------------------
+  // LOADS & LOAD PATH
+  // -----------------------------------------------------------------------
+  tool("slab-dead-load", "Loads & Load Paths", "Slab dead load", "Self-weight per square metre from thickness and unit weight.", [
+    F("t", "Thickness", 0.125, "m", { min: 0 }),
+    F("gamma", "Unit weight", 24, "kN/m³", { min: 0 }),
+  ], ({ t, gamma }) => [{ label: "Slab dead load", value: t * gamma, unit: "kN/m²" }], "w = t × γ"),
+
+  tool("wall-line-load", "Loads & Load Paths", "Wall line load", "Convert wall geometry and unit weight to load carried by a supporting beam/slab strip.", [
+    F("t", "Wall thickness", 0.115, "m", { min: 0 }),
+    F("h", "Wall height", 3, "m", { min: 0 }),
+    F("gamma", "Wall unit weight", 18, "kN/m³", { min: 0 }),
+  ], ({ t, h, gamma }) => [{ label: "Line load", value: t * h * gamma, unit: "kN/m" }], "w_line = t × h × γ"),
+
+  tool("beam-selfweight", "Loads & Load Paths", "Beam self-weight", "Uniform beam self-weight from section dimensions and unit weight.", [
+    F("b", "Width", 0.25, "m", { min: 0 }),
+    F("h", "Depth", 0.45, "m", { min: 0 }),
+    F("gamma", "Unit weight", 24, "kN/m³", { min: 0 }),
+  ], ({ b, h, gamma }) => [{ label: "Beam self-weight", value: b * h * gamma, unit: "kN/m" }], "w = b × h × γ"),
+
+  tool("column-selfweight", "Loads & Load Paths", "Column self-weight", "Approximate axial self-weight per storey for a prismatic column.", [
+    F("b", "Width", 0.4, "m", { min: 0 }),
+    F("d", "Depth", 0.4, "m", { min: 0 }),
+    F("h", "Storey height", 3.0, "m", { min: 0 }),
+    F("gamma", "Unit weight", 24, "kN/m³", { min: 0 }),
+  ], ({ b, d, h, gamma }) => [{ label: "Column self-weight", value: b * d * h * gamma, unit: "kN" }], "W = b × d × h × γ"),
+
+  tool("tributary-area", "Loads & Load Paths", "Tributary area", "Approximate tributary area for an interior or edge support using adjacent spans.", [
+    F("lx", "Span X", 6, "m", { min: 0 }),
+    F("ly", "Span Y", 5, "m", { min: 0 }),
+    T("position", "Support position", { def: "interior", choices: [["interior", "Interior"], ["edge", "Edge"], ["corner", "Corner"]] }),
+  ], ({ lx, ly, position }) => {
+    const factor = position === "interior" ? 1 : position === "edge" ? 0.5 : 0.25;
+    const a = lx * ly * factor;
+    return [{ label: "Approx. tributary area", value: a, unit: "m²" }];
+  }, "Approx. tributary area depends on support position and framing geometry."),
+
+  tool("beam-udl-reactions", "Loads & Load Paths", "Simply supported beam - UDL reactions", "Support reactions for a beam under a uniform load.", [
+    F("L", "Span", 6, "m", { min: 0.01 }),
+    F("w", "Uniform load", 12, "kN/m", { min: 0 }),
+  ], ({ L, w }) => [{ label: "Reaction A", value: w * L / 2, unit: "kN" }, { label: "Reaction B", value: w * L / 2, unit: "kN" }], "RA = RB = wL/2"),
+
+  tool("beam-point-reactions", "Loads & Load Paths", "Simply supported beam - point load", "Support reactions for one point load at a known location.", [
+    F("L", "Span", 6, "m", { min: 0.01 }),
+    F("P", "Point load", 20, "kN", { min: 0 }),
+    F("a", "Distance from A", 2, "m", { min: 0 }),
+  ], ({ L, P, a }) => {
+    const x = clamp(a, 0, L);
+    const RA = P * (L - x) / L;
+    const RB = P * x / L;
+    return [{ label: "Reaction A", value: RA, unit: "kN" }, { label: "Reaction B", value: RB, unit: "kN" }];
+  }, "RB = Pa/L; RA = P − RB"),
+
+  tool("beam-udl-moment", "Loads & Load Paths", "Beam maximum shear & moment - UDL", "Classical simply supported beam actions under a full-span uniform load.", [
+    F("L", "Span", 6, "m", { min: 0.01 }),
+    F("w", "Uniform load", 12, "kN/m", { min: 0 }),
+  ], ({ L, w }) => [{ label: "Max shear", value: w * L / 2, unit: "kN" }, { label: "Max moment", value: w * L * L / 8, unit: "kN·m" }], "Vmax = wL/2; Mmax = wL²/8"),
+
+  tool("beam-point-moment", "Loads & Load Paths", "Beam maximum moment - center point load", "Maximum moment for a center point load on a simply supported beam.", [
+    F("L", "Span", 6, "m", { min: 0.01 }),
+    F("P", "Point load", 20, "kN", { min: 0 }),
+  ], ({ L, P }) => [{ label: "Reaction each", value: P / 2, unit: "kN" }, { label: "Max moment", value: P * L / 4, unit: "kN·m" }], "R = P/2; Mmax = PL/4"),
+
+  tool("factored-load", "Loads & Load Paths", "User-defined load combination", "Apply user-entered load factors to dead, live, wind and seismic actions for a preliminary factored load case.", [
+    F("D", "Dead load", 100, "kN", { min: 0 }),
+    F("L", "Live load", 60, "kN", { min: 0 }),
+    F("W", "Wind load", 20, "kN", { min: 0 }),
+    F("E", "Seismic load", 50, "kN", { min: 0 }),
+    F("fd", "Dead factor", 1.2, "×"),
+    F("fl", "Live factor", 1.6, "×"),
+    F("fw", "Wind factor", 1.0, "×"),
+    F("fe", "Seismic factor", 1.0, "×"),
+  ], ({ D, L, W, E, fd, fl, fw, fe }) => [{ label: "Factored action", value: fd * D + fl * L + fw * W + fe * E, unit: "kN" }], "U = fd·D + fl·L + fw·W + fe·E"),
+
+  tool("mass-to-load", "Loads & Load Paths", "Mass to gravity load", "Convert a mass to an equivalent gravitational force using standard gravity.", [
+    F("m", "Mass", 1000, "kg", { min: 0 }),
+  ], ({ m }) => [{ label: "Weight", value: m * C.g / 1000, unit: "kN" }], "W = m·g"),
+
+  tool("impact-load", "Loads & Load Paths", "Impact / dynamic amplification", "Apply a user-defined dynamic/impact factor to a static action.", [
+    F("P", "Static action", 20, "kN", { min: 0 }),
+    F("IF", "Impact factor", 1.25, "×", { min: 0 }),
+  ], ({ P, IF }) => [{ label: "Amplified action", value: P * IF, unit: "kN" }], "P_design = IF × P_static"),
+
+  // -----------------------------------------------------------------------
+  // REINFORCED CONCRETE
+  // -----------------------------------------------------------------------
+  tool("rebar-area", "Reinforced Concrete", "Rebar area from diameter & count", "Gross steel area supplied by equally sized bars.", [
+    F("d", "Bar diameter", 16, "mm", { min: 1 }),
+    F("n", "Number of bars", 4, "bars", { min: 1, step: 1 }),
+  ], ({ d, n }) => [{ label: "Steel area", value: rebarDia(d), unit: "mm²/bar" }, { label: "Total As", value: n * rebarDia(d), unit: "mm²" }], "As = n·πd²/4"),
+
+  tool("rebar-count", "Reinforced Concrete", "Rebar quantity for required steel area", "Approximate number of bars needed to meet or exceed a required steel area.", [
+    F("As", "Required steel area", 1600, "mm²", { min: 0 }),
+    F("d", "Bar diameter", 16, "mm", { min: 1 }),
+  ], ({ As, d }) => [{ label: "Bars required", value: Math.ceil(As / rebarDia(d)), unit: "bars" }, { label: "Provided area", value: Math.ceil(As / rebarDia(d)) * rebarDia(d), unit: "mm²" }], "n = ceil(As_required / (πd²/4))"),
+
+  tool("rebar-weight", "Reinforced Concrete", "Rebar weight", "Estimate reinforcement mass using the common d²/162 relationship for metric rebar.", [
+    F("d", "Bar diameter", 16, "mm", { min: 1 }),
+    F("length", "Total bar length", 240, "m", { min: 0 }),
+  ], ({ d, length }) => [{ label: "Unit weight", value: rebarWtKgM(d), unit: "kg/m" }, { label: "Total steel", value: rebarWtKgM(d) * length, unit: "kg" }, { label: "Total steel", value: rebarWtKgM(d) * length / 1000, unit: "t" }], "w_unit ≈ d²/162 kg/m"),
+
+  tool("reinforcement-ratio", "Reinforced Concrete", "Reinforcement ratio", "Longitudinal reinforcement ratio relative to gross or effective section area.", [
+    F("As", "Steel area", 1600, "mm²", { min: 0 }),
+    F("b", "Width", 300, "mm", { min: 1 }),
+    F("h", "Depth", 500, "mm", { min: 1 }),
+  ], ({ As, b, h }) => [{ label: "ρ (gross area)", value: As / (b * h) * 100, unit: "%" }], "ρ = As/(b·h) × 100%"),
+
+  tool("effective-depth", "Reinforced Concrete", "Effective depth", "Approximate effective depth from overall depth, cover and bar/ring sizes.", [
+    F("h", "Overall depth", 500, "mm", { min: 1 }),
+    F("cover", "Clear cover", 40, "mm", { min: 0 }),
+    F("stirrup", "Stirrup diameter", 8, "mm", { min: 0 }),
+    F("bar", "Main bar diameter", 16, "mm", { min: 1 }),
+  ], ({ h, cover, stirrup, bar }) => [{ label: "Effective depth d", value: h - cover - stirrup - bar / 2, unit: "mm" }], "d ≈ h − cover − φ_stirrup − φ_main/2"),
+
+  tool("beam-as-simplified", "Reinforced Concrete", "Beam flexural As - simplified", "Preliminary tensile steel estimate using a rectangular lever-arm approximation. Not a code design check.", [
+    F("Mu", "Design moment", 150, "kN·m", { min: 0 }),
+    F("fy", "Steel yield strength", 500, "MPa", { min: 1 }),
+    F("d", "Effective depth", 450, "mm", { min: 1 }),
+    F("zratio", "Lever-arm ratio z/d", 0.9, "×", { min: 0.1, max: 1 }),
+  ], ({ Mu, fy, d, zratio }) => {
+    const z = d * zratio;
+    const As = Mu * 1e6 / (fy * z);
+    return [{ label: "Approx. As", value: As, unit: "mm²" }, { label: "Lever arm z", value: z, unit: "mm" }];
+  }, "As ≈ Mu/(fy·z), z ≈ (z/d)·d"),
+
+  tool("beam-moment-capacity", "Reinforced Concrete", "Beam nominal moment - simple As·fy·z", "Approximate nominal flexural resistance from tensile steel, steel stress and lever arm.", [
+    F("As", "Tension steel", 1600, "mm²", { min: 0 }),
+    F("fy", "Steel strength", 500, "MPa", { min: 1 }),
+    F("z", "Lever arm", 400, "mm", { min: 1 }),
+  ], ({ As, fy, z }) => [{ label: "Approx. moment", value: As * fy * z / 1e6, unit: "kN·m" }], "M ≈ As·fy·z"),
+
+  tool("slab-as", "Reinforced Concrete", "One-way slab steel estimate", "Preliminary steel-area estimate per metre strip using a simplified moment relationship.", [
+    F("Mu", "Design moment", 20, "kN·m/m", { min: 0 }),
+    F("fy", "Steel yield strength", 500, "MPa", { min: 1 }),
+    F("d", "Effective depth", 100, "mm", { min: 1 }),
+    F("zratio", "z/d", 0.9, "×", { min: 0.1, max: 1 }),
+  ], ({ Mu, fy, d, zratio }) => [{ label: "Approx. As", value: Mu * 1e6 / (fy * d * zratio), unit: "mm²/m" }], "As ≈ Mu/(fy·z), z ≈ 0.9d"),
+
+  tool("slab-deflection", "Reinforced Concrete", "Slab elastic deflection", "Uniform-load beam-strip approximation for a simply supported slab strip. Useful as a conceptual check only.", [
+    F("w", "Uniform load", 5, "kN/m", { min: 0 }),
+    F("L", "Span", 4, "m", { min: 0.01 }),
+    F("E", "Elastic modulus", 30000, "MPa", { min: 1 }),
+    F("I", "Strip I", 0.000002, "m⁴", { min: 1e-12 }),
+  ], ({ w, L, E, I }) => [{ label: "Midspan deflection", value: 5 * w * 1000 * Math.pow(L, 4) / (384 * E * 1e6 * I) * 1000, unit: "mm" }], "δmax = 5wL⁴/(384EI)"),
+
+  tool("oneway-shear", "Reinforced Concrete", "One-way shear stress", "Nominal shear stress estimate on a beam or slab section.", [
+    F("Vu", "Shear", 180, "kN", { min: 0 }),
+    F("b", "Section width", 300, "mm", { min: 1 }),
+    F("d", "Effective depth", 450, "mm", { min: 1 }),
+  ], ({ Vu, b, d }) => [{ label: "v", value: Vu * 1000 / (b * d), unit: "N/mm²" }], "v = Vu/(b·d)"),
+
+  tool("punching-shear", "Reinforced Concrete", "Punching shear stress", "Average punching shear stress around a critical perimeter using a user-entered perimeter.", [
+    F("Vu", "Punching shear", 500, "kN", { min: 0 }),
+    F("u", "Critical perimeter", 4.0, "m", { min: 0.01 }),
+    F("d", "Effective depth", 180, "mm", { min: 1 }),
+  ], ({ Vu, u, d }) => [{ label: "Punching stress", value: Vu * 1000 / (u * 1000 * d), unit: "N/mm²" }], "v = Vu/(u·d)"),
+
+  tool("column-axial-stress", "Reinforced Concrete", "Column axial stress", "Average axial compressive stress on a gross column section.", [
+    F("P", "Axial load", 1000, "kN", { min: 0 }),
+    F("b", "Width", 400, "mm", { min: 1 }),
+    F("h", "Depth", 400, "mm", { min: 1 }),
+  ], ({ P, b, h }) => [{ label: "Average stress", value: P * 1000 / (b * h), unit: "N/mm²" }], "σ = P/A"),
+
+  tool("column-simple-capacity", "Reinforced Concrete", "Column axial capacity - simplified", "Conceptual squash-load estimate for a short reinforced concrete section; not a code capacity check.", [
+    F("Ac", "Concrete area", 140000, "mm²", { min: 0 }),
+    F("As", "Longitudinal steel", 4000, "mm²", { min: 0 }),
+    F("fc", "Concrete strength", 30, "MPa", { min: 1 }),
+    F("fy", "Steel strength", 500, "MPa", { min: 1 }),
+    F("ηc", "Concrete coefficient", 0.85, "×", { min: 0 }),
+  ], ({ Ac, As, fc, fy, ηc }) => [{ label: "Approx. squash load", value: (ηc * fc * Ac + fy * As) / 1000, unit: "kN" }], "P ≈ ηc·fc·Ac + fy·As"),
+
+  tool("development-length", "Reinforced Concrete", "Bar development length - simplified", "Conceptual development-length estimate based on bar diameter and bond-related inputs.", [
+    F("d", "Bar diameter", 16, "mm", { min: 1 }),
+    F("fy", "Bar yield strength", 500, "MPa", { min: 1 }),
+    F("fb", "Allowable bond stress", 1.6, "MPa", { min: 0.01 }),
+    F("factor", "Model factor", 0.25, "×", { min: 0.01 }),
+  ], ({ d, fy, fb, factor }) => [{ label: "Approx. development length", value: factor * d * fy / fb, unit: "mm" }], "Illustrative Ld ≈ factor·d·fy/fb; use governing code formula for design."),
+
+  tool("lap-length", "Reinforced Concrete", "Lap splice length", "Simple user-defined multiplier of development length for preliminary takeoff.", [
+    F("Ld", "Development length", 800, "mm", { min: 0 }),
+    F("mult", "Lap multiplier", 1.3, "×", { min: 0 }),
+  ], ({ Ld, mult }) => [{ label: "Lap length", value: Ld * mult, unit: "mm" }], "Llap = mult × Ld"),
+
+  // -----------------------------------------------------------------------
+  // STEEL & STRUCTURAL MECHANICS
+  // -----------------------------------------------------------------------
+  tool("stress", "Steel & Structural Mechanics", "Axial stress", "Average normal stress from axial force and cross-sectional area.", [
+    F("P", "Axial force", 200, "kN"),
+    F("A", "Area", 5000, "mm²", { min: 0.01 }),
+  ], ({ P, A }) => [{ label: "Stress", value: P * 1000 / A, unit: "MPa" }], "σ = P/A"),
+
+  tool("strain", "Steel & Structural Mechanics", "Engineering strain", "Calculate axial strain from extension and original gauge length.", [
+    F("ΔL", "Extension", 1.2, "mm"),
+    F("L", "Original length", 1200, "mm", { min: 0.01 }),
+  ], ({ ΔL, L }) => [{ label: "Strain", value: ΔL / L, unit: "" }, { label: "Microstrain", value: ΔL / L * 1e6, unit: "με" }], "ε = ΔL/L"),
+
+  tool("bending-stress", "Steel & Structural Mechanics", "Bending stress", "Elastic bending stress using moment and section modulus.", [
+    F("M", "Moment", 50, "kN·m"),
+    F("Z", "Section modulus", 250000, "mm³", { min: 0.01 }),
+  ], ({ M, Z }) => [{ label: "Bending stress", value: M * 1e6 / Z, unit: "MPa" }], "σ = M/Z"),
+
+  tool("shear-stress", "Steel & Structural Mechanics", "Average shear stress", "Average shear stress from shear force and gross area.", [
+    F("V", "Shear force", 100, "kN"),
+    F("A", "Shear area", 5000, "mm²", { min: 0.01 }),
+  ], ({ V, A }) => [{ label: "Shear stress", value: V * 1000 / A, unit: "MPa" }], "τavg = V/A"),
+
+  tool("torsional-shear", "Steel & Structural Mechanics", "Torsional shear stress", "Maximum torsional shear stress for a circular shaft using J and radius.", [
+    F("T", "Torque", 1000, "N·m"),
+    F("r", "Outer radius", 25, "mm", { min: 0.01 }),
+    F("J", "Polar inertia", 122718, "mm⁴", { min: 0.01 }),
+  ], ({ T, r, J }) => [{ label: "Max torsional shear", value: T * 1000 * r / J, unit: "N/mm²" }], "τ = Tr/J"),
+
+  tool("rectangle-I", "Steel & Structural Mechanics", "Rectangle second moment", "Second moment of area for a rectangular section about its centroidal strong axis.", [
+    F("b", "Width", 300, "mm", { min: 0.01 }),
+    F("h", "Depth", 500, "mm", { min: 0.01 }),
+  ], ({ b, h }) => [{ label: "I", value: b * Math.pow(h, 3) / 12, unit: "mm⁴" }, { label: "Z", value: b * h * h / 6, unit: "mm³" }], "I = bh³/12; Z = bh²/6"),
+
+  tool("circle-I", "Steel & Structural Mechanics", "Solid circular section", "Second moment, polar inertia and section modulus for a solid round section.", [
+    F("d", "Diameter", 100, "mm", { min: 0.01 }),
+  ], ({ d }) => [{ label: "I", value: Math.PI * Math.pow(d, 4) / 64, unit: "mm⁴" }, { label: "J", value: Math.PI * Math.pow(d, 4) / 32, unit: "mm⁴" }, { label: "Z", value: Math.PI * Math.pow(d, 3) / 32, unit: "mm³" }], "I = πd⁴/64; J = πd⁴/32; Z = πd³/32"),
+
+  tool("euler-buckling", "Steel & Structural Mechanics", "Euler elastic buckling", "Ideal elastic critical load for a prismatic column using effective length factor.", [
+    F("E", "Elastic modulus", 200000, "MPa", { min: 1 }),
+    F("I", "Second moment", 8e6, "mm⁴", { min: 0.01 }),
+    F("L", "Effective length", 3000, "mm", { min: 0.01 }),
+    F("K", "Effective length factor", 1.0, "×", { min: 0.01 }),
+  ], ({ E, I, L, K }) => [{ label: "Euler load", value: Math.PI ** 2 * E * I / Math.pow(K * L, 2) / 1000, unit: "kN" }], "Pcr = π²EI/(KL)²"),
+
+  tool("slenderness", "Steel & Structural Mechanics", "Slenderness ratio", "Column slenderness using effective length and radius of gyration.", [
+    F("KL", "Effective length", 3000, "mm", { min: 0.01 }),
+    F("r", "Radius of gyration", 40, "mm", { min: 0.01 }),
+  ], ({ KL, r }) => [{ label: "Slenderness λ", value: KL / r, unit: "" }], "λ = KL/r"),
+
+  tool("beam-deflection-udl", "Steel & Structural Mechanics", "Simply supported beam deflection - UDL", "Elastic midspan deflection under a full-span uniform load.", [
+    F("w", "Load", 10, "kN/m", { min: 0 }),
+    F("L", "Span", 6, "m", { min: 0.01 }),
+    F("E", "Elastic modulus", 200000, "MPa", { min: 1 }),
+    F("I", "Second moment", 1.5e8, "mm⁴", { min: 0.01 }),
+  ], ({ w, L, E, I }) => [{ label: "Deflection", value: 5 * w * Math.pow(L * 1000, 4) / (384 * E * I) , unit: "mm" }], "δmax = 5wL⁴/(384EI)"),
+
+  tool("beam-deflection-point", "Steel & Structural Mechanics", "Simply supported beam deflection - center point", "Elastic midspan deflection from a center point load.", [
+    F("P", "Point load", 20, "kN", { min: 0 }),
+    F("L", "Span", 6, "m", { min: 0.01 }),
+    F("E", "Elastic modulus", 200000, "MPa", { min: 1 }),
+    F("I", "Second moment", 1.5e8, "mm⁴", { min: 0.01 }),
+  ], ({ P, L, E, I }) => [{ label: "Deflection", value: P * 1000 * Math.pow(L * 1000, 3) / (48 * E * I), unit: "mm" }], "δmax = PL³/(48EI)"),
+
+  tool("cantilever-point", "Steel & Structural Mechanics", "Cantilever deflection - end load", "Tip deflection for a cantilever with a point load at the free end.", [
+    F("P", "End load", 10, "kN", { min: 0 }),
+    F("L", "Length", 3, "m", { min: 0.01 }),
+    F("E", "Elastic modulus", 200000, "MPa", { min: 1 }),
+    F("I", "Second moment", 8e7, "mm⁴", { min: 0.01 }),
+  ], ({ P, L, E, I }) => [{ label: "Tip deflection", value: P * 1000 * Math.pow(L * 1000, 3) / (3 * E * I), unit: "mm" }], "δ = PL³/(3EI)"),
+
+  tool("cantilever-udl", "Steel & Structural Mechanics", "Cantilever deflection - UDL", "Tip deflection for a cantilever under a uniform load.", [
+    F("w", "UDL", 5, "kN/m", { min: 0 }),
+    F("L", "Length", 3, "m", { min: 0.01 }),
+    F("E", "Elastic modulus", 200000, "MPa", { min: 1 }),
+    F("I", "Second moment", 8e7, "mm⁴", { min: 0.01 }),
+  ], ({ w, L, E, I }) => [{ label: "Tip deflection", value: w * Math.pow(L * 1000, 4) / (8 * E * I), unit: "mm" }], "δ = wL⁴/(8EI)"),
+
+  tool("shaft-torque", "Steel & Structural Mechanics", "Shaft torque from power & speed", "Calculate torque from rotational power and speed.", [
+    F("P", "Power", 15, "kW", { min: 0 }),
+    F("N", "Speed", 1450, "rpm", { min: 0.01 }),
+  ], ({ P, N }) => [{ label: "Torque", value: 9550 * P / N, unit: "N·m" }], "T(N·m) = 9550·P(kW)/N(rpm)"),
+
+  tool("shaft-power", "Steel & Structural Mechanics", "Shaft power from torque & speed", "Calculate rotational power from torque and speed.", [
+    F("T", "Torque", 100, "N·m", { min: 0 }),
+    F("N", "Speed", 1500, "rpm", { min: 0.01 }),
+  ], ({ T, N }) => [{ label: "Power", value: T * N / 9550, unit: "kW" }], "P(kW) = TN/9550"),
+
+  tool("bolt-shear", "Steel & Structural Mechanics", "Bolt shear stress", "Average shear stress in a bolt group based on total shear and bolt count.", [
+    F("V", "Shear", 80, "kN", { min: 0 }),
+    F("n", "Number of bolts", 4, "bolts", { min: 1, step: 1 }),
+    F("d", "Bolt diameter", 20, "mm", { min: 1 }),
+  ], ({ V, n, d }) => [{ label: "Shear per bolt", value: V / n, unit: "kN" }, { label: "Average bolt shear", value: V * 1000 / (n * rebarDia(d)), unit: "MPa" }], "τ = V/(n·πd²/4)"),
+
+  tool("steel-plate-weight", "Steel & Structural Mechanics", "Steel plate weight", "Mass and weight of a steel plate.", [
+    F("l", "Length", 2, "m", { min: 0 }),
+    F("w", "Width", 1, "m", { min: 0 }),
+    F("t", "Thickness", 10, "mm", { min: 0 }),
+  ], ({ l, w, t }) => {
+    const m = l * w * t / 1000 * C.rhoSteel;
+    return [{ label: "Mass", value: m, unit: "kg" }, { label: "Weight", value: m * C.g / 1000, unit: "kN" }];
+  }, "m = L·W·t(m)·ρsteel"),
+
+  // -----------------------------------------------------------------------
+  // FOUNDATIONS & GEOTECHNICAL
+  // -----------------------------------------------------------------------
+  tool("footing-area", "Foundations & Geotechnical", "Required footing area", "Preliminary isolated footing area from service axial load and allowable bearing pressure.", [
+    F("P", "Service axial load", 800, "kN", { min: 0 }),
+    F("qa", "Allowable bearing pressure", 150, "kPa", { min: 0.01 }),
+  ], ({ P, qa }) => [{ label: "Required area", value: P / qa, unit: "m²" }, { label: "Square footing side", value: Math.sqrt(P / qa), unit: "m" }], "A = P/qa"),
+
+  tool("bearing-pressure", "Foundations & Geotechnical", "Average soil bearing pressure", "Average contact pressure under a footing.", [
+    F("P", "Service load", 800, "kN", { min: 0 }),
+    F("B", "Footing width", 2.5, "m", { min: 0.01 }),
+    F("L", "Footing length", 2.5, "m", { min: 0.01 }),
+  ], ({ P, B, L }) => [{ label: "Average pressure", value: P / (B * L), unit: "kPa" }], "q = P/(B·L)"),
+
+  tool("eccentric-footing", "Foundations & Geotechnical", "Eccentric footing pressure", "Linear soil-pressure approximation for a rigid rectangular footing under axial load and one-axis eccentricity.", [
+    F("P", "Axial load", 1000, "kN", { min: 0 }),
+    F("B", "Footing width", 2.5, "m", { min: 0.01 }),
+    F("L", "Footing length", 2.5, "m", { min: 0.01 }),
+    F("e", "Eccentricity", 0.25, "m", { min: 0 }),
+  ], ({ P, B, L, e }) => {
+    const q = P / (B * L);
+    const qmax = q * (1 + 6 * e / B);
+    const qmin = q * (1 - 6 * e / B);
+    return [{ label: "qavg", value: q, unit: "kPa" }, { label: "qmax", value: qmax, unit: "kPa" }, { label: "qmin", value: qmin, unit: "kPa" }, { label: "Middle-third check", value: Math.abs(e) <= B / 6 ? "PASS" : "NO - tension possible" }];
+  }, "qmax/min = P/(BL) × (1 ± 6e/B)"),
+
+  tool("terzaghi-qa", "Foundations & Geotechnical", "Shallow foundation bearing capacity - simplified", "Preliminary Terzaghi-style bearing-capacity estimate using user-entered factors. This does not replace code/site-specific analysis.", [
+    F("c", "Cohesion", 20, "kPa", { min: 0 }),
+    F("q", "Surcharge at base", 30, "kPa", { min: 0 }),
+    F("gamma", "Soil unit weight", 18, "kN/m³", { min: 0 }),
+    F("B", "Footing width", 2, "m", { min: 0.01 }),
+    F("Nc", "Nc", 17.7, ""),
+    F("Nq", "Nq", 7.4, ""),
+    F("Ng", "Nγ", 5.0, ""),
+  ], ({ c, q, gamma, B, Nc, Nq, Ng }) => {
+    const qult = c * Nc + q * Nq + 0.5 * gamma * B * Ng;
+    return [{ label: "Ultimate bearing capacity", value: qult, unit: "kPa" }];
+  }, "qult ≈ cNc + qNq + 0.5γBNγ"),
+
+  tool("soil-stress-depth", "Foundations & Geotechnical", "Vertical soil stress with depth", "Simple vertical overburden stress from depth and unit weight.", [
+    F("gamma", "Unit weight", 18, "kN/m³", { min: 0 }),
+    F("z", "Depth", 5, "m", { min: 0 }),
+  ], ({ gamma, z }) => [{ label: "Vertical overburden", value: gamma * z, unit: "kPa" }], "σv = γz"),
+
+  tool("active-earth", "Foundations & Geotechnical", "Active earth pressure", "Rankine active pressure coefficient and resultant thrust for level backfill.", [
+    F("phi", "Friction angle", 30, "°", { min: 0, max: 89 }),
+    F("gamma", "Soil unit weight", 18, "kN/m³", { min: 0 }),
+    F("H", "Retaining height", 4, "m", { min: 0.01 }),
+  ], ({ phi, gamma, H }) => {
+    const k = Math.pow(Math.tan(Math.PI / 4 - rad(phi) / 2), 2);
+    const P = 0.5 * k * gamma * H * H;
+    return [{ label: "Ka", value: k, unit: "" }, { label: "Base lateral stress", value: k * gamma * H, unit: "kPa" }, { label: "Resultant active thrust", value: P, unit: "kN/m" }, { label: "Line of action", value: H / 3, unit: "m above base" }];
+  }, "Ka = tan²(45°−φ/2); Pa = 0.5KaγH²"),
+
+  tool("passive-earth", "Foundations & Geotechnical", "Passive earth pressure", "Rankine passive pressure coefficient and resultant thrust for level backfill.", [
+    F("phi", "Friction angle", 30, "°", { min: 0, max: 89 }),
+    F("gamma", "Soil unit weight", 18, "kN/m³", { min: 0 }),
+    F("H", "Retaining height", 4, "m", { min: 0.01 }),
+  ], ({ phi, gamma, H }) => {
+    const k = Math.pow(Math.tan(Math.PI / 4 + rad(phi) / 2), 2);
+    return [{ label: "Kp", value: k, unit: "" }, { label: "Resultant passive thrust", value: 0.5 * k * gamma * H * H, unit: "kN/m" }];
+  }, "Kp = tan²(45°+φ/2); Pp = 0.5KpγH²"),
+
+  tool("retaining-overturn", "Foundations & Geotechnical", "Retaining wall overturning check", "Moment ratio of resisting to overturning actions.", [
+    F("Mr", "Resisting moment", 800, "kN·m/m", { min: 0 }),
+    F("Mo", "Overturning moment", 250, "kN·m/m", { min: 0.01 }),
+  ], ({ Mr, Mo }) => [{ label: "Factor of safety", value: Mr / Mo, unit: "×" }, { label: "Status at 1.5", value: Mr / Mo >= 1.5 ? "PASS (reference only)" : "CHECK" }], "FS = Mr/Mo; project/code criterion governs"),
+
+  tool("retaining-sliding", "Foundations & Geotechnical", "Retaining wall sliding check", "Ratio of available horizontal resistance to driving force.", [
+    F("R", "Horizontal resistance", 400, "kN/m", { min: 0 }),
+    F("D", "Driving force", 220, "kN/m", { min: 0.01 }),
+  ], ({ R, D }) => [{ label: "Factor of safety", value: R / D, unit: "×" }, { label: "Status at 1.5", value: R / D >= 1.5 ? "PASS (reference only)" : "CHECK" }], "FS = R/D; project/code criterion governs"),
+
+  tool("settlement-elastic", "Foundations & Geotechnical", "Elastic foundation settlement", "Preliminary elastic settlement using a simplified influence factor.", [
+    F("q", "Net pressure", 150, "kPa", { min: 0 }),
+    F("B", "Footing width", 2.5, "m", { min: 0.01 }),
+    F("E", "Soil modulus", 15000, "kPa", { min: 1 }),
+    F("If", "Influence factor", 1.1, "×", { min: 0 }),
+    F("nu", "Poisson ratio", 0.3, "", { min: 0, max: .49 }),
+  ], ({ q, B, E, If, nu }) => [{ label: "Elastic settlement", value: q * B * If * (1 - nu * nu) / E * 1000, unit: "mm" }], "s ≈ qBIf(1−ν²)/E"),
+
+  tool("pile-allowable", "Foundations & Geotechnical", "Pile axial allowable load", "Simple allowable axial load from shaft resistance plus end bearing divided by a safety factor.", [
+    F("Qs", "Ultimate shaft resistance", 800, "kN", { min: 0 }),
+    F("Qb", "Ultimate base resistance", 500, "kN", { min: 0 }),
+    F("FS", "Safety factor", 2.5, "×", { min: .1 }),
+  ], ({ Qs, Qb, FS }) => [{ label: "Allowable capacity", value: (Qs + Qb) / FS, unit: "kN" }], "Qall = (Qs + Qb)/FS"),
+
+  // -----------------------------------------------------------------------
+  // WIND & SEISMIC / LATERAL
+  // -----------------------------------------------------------------------
+  tool("wind-pressure", "Wind & Seismic", "Wind velocity pressure", "Convert wind speed to basic dynamic pressure using q = 0.5ρV².", [
+    F("V", "Wind speed", 45, "m/s", { min: 0 }),
+    F("rho", "Air density", 1.225, "kg/m³", { min: 0 }),
+  ], ({ V, rho }) => [{ label: "Dynamic pressure", value: 0.5 * rho * V * V, unit: "Pa" }, { label: "Dynamic pressure", value: 0.5 * rho * V * V / 1000, unit: "kPa" }], "q = 0.5ρV²; code velocity pressure includes additional factors"),
+
+  tool("wind-force", "Wind & Seismic", "Wind force", "Preliminary force from pressure, projected area and an overall pressure/shape coefficient.", [
+    F("q", "Wind pressure", 1.2, "kPa", { min: 0 }),
+    F("A", "Projected area", 150, "m²", { min: 0 }),
+    F("Cd", "Overall coefficient", 1.3, "×", { min: 0 }),
+  ], ({ q, A, Cd }) => [{ label: "Wind force", value: q * A * Cd, unit: "kN" }], "F = q·A·Cd; governing code method controls final design"),
+
+  tool("seismic-base-shear", "Wind & Seismic", "Equivalent lateral base shear", "Conceptual base-shear calculation using a user-specified seismic coefficient.", [
+    F("Cs", "Seismic coefficient", 0.12, "×", { min: 0 }),
+    F("W", "Seismic weight", 5000, "kN", { min: 0 }),
+  ], ({ Cs, W }) => [{ label: "Base shear V", value: Cs * W, unit: "kN" }], "V = CsW; derive Cs from the governing seismic code and hazard/site parameters"),
+
+  tool("seismic-weight", "Wind & Seismic", "Seismic effective weight", "Sum component weights using user-defined participation factors.", [
+    F("D", "Dead load weight", 4500, "kN", { min: 0 }),
+    F("L", "Live load weight", 1200, "kN", { min: 0 }),
+    F("rL", "Live load participation", 0.25, "×", { min: 0, max: 1 }),
+    F("R", "Roof/other weight", 500, "kN", { min: 0 }),
+  ], ({ D, L, rL, R }) => [{ label: "Effective seismic weight", value: D + rL * L + R, unit: "kN" }], "W = D + rL·L + R"),
+
+  tool("story-shear-distribution", "Wind & Seismic", "Story shear distribution", "Distribute a total lateral base shear in proportion to story weight × height.", [
+    F("V", "Base shear", 1200, "kN", { min: 0 }),
+    F("W", "Target story weight", 800, "kN", { min: 0 }),
+    F("h", "Target story height", 12, "m", { min: 0 }),
+    F("sumWh", "Total ΣWi·hi", 24000, "kN·m", { min: 0.01 }),
+  ], ({ V, W, h, sumWh }) => [{ label: "Equivalent story force", value: V * W * h / sumWh, unit: "kN" }], "Fi = V·Wi·hi/Σ(Wj·hj)"),
+
+  tool("drift-ratio", "Wind & Seismic", "Storey drift ratio", "Relative storey displacement divided by storey height.", [
+    F("drift", "Storey drift", 18, "mm", { min: 0 }),
+    F("h", "Storey height", 3, "m", { min: 0.01 }),
+  ], ({ drift, h }) => [{ label: "Drift ratio", value: drift / (h * 1000), unit: "" }, { label: "Drift %", value: drift / (h * 1000) * 100, unit: "%" }], "drift ratio = Δ/h"),
+
+  tool("building-period", "Wind & Seismic", "Approximate fundamental period", "Empirical period form T = Ct·H^x with user-defined code/model coefficients.", [
+    F("Ct", "Period coefficient", 0.03, ""),
+    F("H", "Building height", 30, "m", { min: 0.01 }),
+    F("x", "Exponent", 0.75, ""),
+  ], ({ Ct, H, x }) => [{ label: "Period T", value: Ct * Math.pow(H, x), unit: "s" }, { label: "Frequency", value: safeDiv(1, Ct * Math.pow(H, x)), unit: "Hz" }], "T = Ct·H^x; code-specific period limits and system coefficients govern"),
+
+  tool("overturning-moment", "Wind & Seismic", "Lateral overturning moment", "Sum base moment from story forces and lever arms.", [
+    F("F", "Resultant lateral force", 500, "kN", { min: 0 }),
+    F("h", "Resultant lever arm", 18, "m", { min: 0 }),
+  ], ({ F, h }) => [{ label: "Overturning moment", value: F * h, unit: "kN·m" }], "M_ot = F·h"),
+
+  // -----------------------------------------------------------------------
+  // MASONRY / BUILDING FABRIC
+  // -----------------------------------------------------------------------
+  tool("brick-count", "Masonry & Building Fabric", "Brick quantity", "Approximate brick count for a wall from wall volume and brick unit volume.", [
+    F("L", "Wall length", 20, "m", { min: 0 }),
+    F("H", "Wall height", 3, "m", { min: 0 }),
+    F("t", "Wall thickness", 0.115, "m", { min: 0 }),
+    F("lb", "Brick length", 0.19, "m", { min: 0.001 }),
+    F("wb", "Brick width", 0.09, "m", { min: 0.001 }),
+    F("hb", "Brick height", 0.09, "m", { min: 0.001 }),
+    F("waste", "Waste", 5, "%", { min: 0 }),
+  ], ({ L, H, t, lb, wb, hb, waste }) => {
+    const wallV = L * H * t;
+    const brickV = lb * wb * hb;
+    return [{ label: "Wall volume", value: wallV, unit: "m³" }, { label: "Bricks", value: wallV / brickV * (1 + waste / 100), unit: "approx." }];
+  }, "N ≈ wall volume / brick volume × (1 + waste)"),
+
+  tool("block-count", "Masonry & Building Fabric", "Concrete block quantity", "Approximate concrete masonry block count for a wall.", [
+    F("L", "Wall length", 20, "m", { min: 0 }),
+    F("H", "Wall height", 3, "m", { min: 0 }),
+    F("blockA", "Block face area", 0.12, "m²", { min: 0.001 }),
+    F("openings", "Openings", 4, "m²", { min: 0 }),
+    F("waste", "Waste", 3, "%", { min: 0 }),
+  ], ({ L, H, blockA, openings, waste }) => [{ label: "Blocks", value: Math.max(0, L * H - openings) / blockA * (1 + waste / 100), unit: "approx." }], "N ≈ net wall area/block face area × (1 + waste)"),
+
+  tool("mortar", "Masonry & Building Fabric", "Masonry mortar volume", "Preliminary mortar volume from masonry volume and a user-entered mortar fraction.", [
+    F("masonry", "Masonry volume", 12, "m³", { min: 0 }),
+    F("fraction", "Mortar fraction", 0.20, "×", { min: 0, max: 1 }),
+    F("waste", "Waste", 10, "%", { min: 0 }),
+  ], ({ masonry, fraction, waste }) => [{ label: "Mortar", value: masonry * fraction * (1 + waste / 100), unit: "m³" }], "Vmortar = Vmasonry × fraction × (1 + waste)"),
+
+  tool("plaster", "Masonry & Building Fabric", "Plaster quantity", "Surface area and plaster material volume at a chosen thickness.", [
+    F("A", "Surface area", 250, "m²", { min: 0 }),
+    F("t", "Plaster thickness", 12, "mm", { min: 0 }),
+    F("waste", "Waste", 10, "%", { min: 0 }),
+  ], ({ A, t, waste }) => [{ label: "Plaster volume", value: A * t / 1000 * (1 + waste / 100), unit: "m³" }], "V = A·t(m)·(1+waste)"),
+
+  tool("paint", "Masonry & Building Fabric", "Paint quantity", "Estimate litres of paint from surface area and coverage rate.", [
+    F("A", "Paint area", 300, "m²", { min: 0 }),
+    F("coverage", "Coverage", 10, "m²/L", { min: 0.01 }),
+    F("coats", "Coats", 2, "coats", { min: 1, step: 1 }),
+    F("waste", "Waste", 5, "%", { min: 0 }),
+  ], ({ A, coverage, coats, waste }) => [{ label: "Paint", value: A / coverage * coats * (1 + waste / 100), unit: "L" }], "L = A/coverage × coats × (1+waste)"),
+
+  tool("opening-deduction", "Masonry & Building Fabric", "Opening deduction", "Total opening area from doors and windows for net masonry/plaster quantities.", [
+    F("doors", "Door count", 4, "", { min: 0, step: 1 }),
+    F("doorA", "Door area each", 1.8, "m²", { min: 0 }),
+    F("windows", "Window count", 12, "", { min: 0, step: 1 }),
+    F("windowA", "Window area each", 1.5, "m²", { min: 0 }),
+  ], ({ doors, doorA, windows, windowA }) => [{ label: "Total openings", value: doors * doorA + windows * windowA, unit: "m²" }], "A_openings = Nd·Ad + Nw·Aw"),
+
+  // -----------------------------------------------------------------------
+  // ROOF / STAIRS / EARTHWORK
+  // -----------------------------------------------------------------------
+  tool("rafter-length", "Roof, Stairs & Earthwork", "Rafter length", "Length of one sloping roof member from half-span and rise.", [
+    F("run", "Horizontal run", 4, "m", { min: 0 }),
+    F("rise", "Rise", 1.5, "m", { min: 0 }),
+  ], ({ run, rise }) => [{ label: "Rafter length", value: Math.hypot(run, rise), unit: "m" }, { label: "Pitch angle", value: deg(Math.atan2(rise, run)), unit: "°" }], "r = √(run² + rise²)"),
+
+  tool("roof-pitch", "Roof, Stairs & Earthwork", "Roof pitch", "Convert rise and run into slope, angle and common pitch ratio.", [
+    F("rise", "Rise", 1.5, "m", { min: 0 }),
+    F("run", "Run", 4, "m", { min: 0.01 }),
+  ], ({ rise, run }) => [{ label: "Slope", value: rise / run * 100, unit: "%" }, { label: "Angle", value: deg(Math.atan2(rise, run)), unit: "°" }, { label: "Rise:run", value: `${fmt(rise, 3)} : ${fmt(run, 3)}` }], "slope = rise/run"),
+
+  tool("excavation", "Roof, Stairs & Earthwork", "Excavation volume", "Excavation volume with optional bulking allowance.", [
+    F("L", "Length", 20, "m", { min: 0 }),
+    F("W", "Width", 12, "m", { min: 0 }),
+    F("D", "Depth", 1.8, "m", { min: 0 }),
+    F("bulking", "Bulking", 15, "%", { min: 0 }),
+  ], ({ L, W, D, bulking }) => [{ label: "In-situ volume", value: L * W * D, unit: "m³" }, { label: "Loose volume", value: L * W * D * (1 + bulking / 100), unit: "m³" }], "V_exc = LWD; V_loose = V_exc(1+bulking)"),
+
+  tool("backfill", "Roof, Stairs & Earthwork", "Backfill volume", "Backfill as excavation minus occupied structural volume, with compaction allowance.", [
+    F("exc", "Excavation", 420, "m³", { min: 0 }),
+    F("occupied", "Occupied structure", 180, "m³", { min: 0 }),
+    F("compaction", "Compaction allowance", 8, "%", { min: 0 }),
+  ], ({ exc, occupied, compaction }) => [{ label: "Net backfill", value: Math.max(0, exc - occupied), unit: "m³" }, { label: "Loose material order", value: Math.max(0, exc - occupied) * (1 + compaction / 100), unit: "m³" }], "V_backfill = V_exc − V_structure"),
+
+  tool("cut-fill-balance", "Roof, Stairs & Earthwork", "Cut / fill balance", "Compare excavation cut with required fill and show surplus or deficit.", [
+    F("cut", "Cut volume", 900, "m³", { min: 0 }),
+    F("fill", "Required fill", 650, "m³", { min: 0 }),
+    F("usable", "Usable cut fraction", 0.75, "×", { min: 0, max: 1 }),
+  ], ({ cut, fill, usable }) => {
+    const reusable = cut * usable;
+    return [{ label: "Reusable cut", value: reusable, unit: "m³" }, { label: "Net balance", value: reusable - fill, unit: "m³" }, { label: "Status", value: reusable >= fill ? "Surplus" : "Import required" }];
+  }, "Reusable cut = cut × usable fraction"),
+
+  tool("stair-slab-volume", "Roof, Stairs & Earthwork", "Stair slab / flight concrete", "Approximate concrete volume for a stair slab using plan area and equivalent thickness.", [
+    F("run", "Flight run", 3.6, "m", { min: 0 }),
+    F("width", "Stair width", 1.2, "m", { min: 0 }),
+    F("t", "Equivalent thickness", 0.15, "m", { min: 0 }),
+  ], ({ run, width, t }) => [{ label: "Concrete volume", value: run * width * t, unit: "m³" }], "V ≈ plan run × width × equivalent thickness"),
+
+  tool("handrail", "Roof, Stairs & Earthwork", "Handrail length", "Approximate handrail length along a sloping stair or ramp.", [
+    F("run", "Horizontal run", 4, "m", { min: 0 }),
+    F("rise", "Rise", 2, "m", { min: 0 }),
+    F("ends", "End allowance", 0.6, "m", { min: 0 }),
+  ], ({ run, rise, ends }) => [{ label: "Handrail length", value: Math.hypot(run, rise) + ends, unit: "m" }], "L ≈ √(run²+rise²)+end allowance"),
+
+  // -----------------------------------------------------------------------
+  // QUANTITIES / BOQ / ESTIMATING
+  // -----------------------------------------------------------------------
+  tool("concrete-mix", "Quantities & BOQ", "Concrete material estimate", "Approximate cement, sand and coarse aggregate quantities using a user-defined absolute-volume model.", [
+    F("V", "Concrete volume", 20, "m³", { min: 0 }),
+    F("cement", "Cement", 350, "kg/m³", { min: 0 }),
+    F("sand", "Sand", 0.50, "m³/m³", { min: 0 }),
+    F("agg", "Coarse aggregate", 0.80, "m³/m³", { min: 0 }),
+    F("waste", "Waste", 3, "%", { min: 0 }),
+  ], ({ V, cement, sand, agg, waste }) => [{ label: "Cement", value: V * cement * (1 + waste / 100) / 50, unit: "50 kg bags" }, { label: "Sand", value: V * sand * (1 + waste / 100), unit: "m³" }, { label: "Coarse aggregate", value: V * agg * (1 + waste / 100), unit: "m³" }], "Material quantity = base rate × concrete volume × (1+waste)"),
+
+  tool("formwork-slab", "Quantities & BOQ", "Slab formwork", "Estimate formwork contact area for a simple flat slab including an allowance.", [
+    F("L", "Length", 10, "m", { min: 0 }),
+    F("W", "Width", 8, "m", { min: 0 }),
+    F("allow", "Allowance", 5, "%", { min: 0 }),
+  ], ({ L, W, allow }) => [{ label: "Formwork area", value: L * W * (1 + allow / 100), unit: "m²" }], "A = LW(1+allowance)"),
+
+  tool("formwork-beam", "Quantities & BOQ", "Beam formwork", "Approximate beam soffit and side formwork area.", [
+    F("L", "Beam length", 6, "m", { min: 0 }),
+    F("b", "Beam width", 0.3, "m", { min: 0 }),
+    F("h", "Beam depth", 0.5, "m", { min: 0 }),
+  ], ({ L, b, h }) => [{ label: "Soffit area", value: L * b, unit: "m²" }, { label: "Two side areas", value: 2 * L * h, unit: "m²" }, { label: "Total", value: L * (b + 2 * h), unit: "m²" }], "A_form ≈ L(b+2h), excluding end faces"),
+
+  tool("formwork-column", "Quantities & BOQ", "Column formwork", "Surface area of a prismatic rectangular column for one storey.", [
+    F("b", "Width", 0.4, "m", { min: 0 }),
+    F("d", "Depth", 0.4, "m", { min: 0 }),
+    F("h", "Storey height", 3, "m", { min: 0 }),
+    F("n", "Number of columns", 12, "columns", { min: 1, step: 1 }),
+  ], ({ b, d, h, n }) => [{ label: "One column", value: 2 * (b + d) * h, unit: "m²" }, { label: "All columns", value: 2 * (b + d) * h * n, unit: "m²" }], "A = perimeter × height × quantity"),
+
+  tool("project-cost", "Quantities & BOQ", "Quantity × rate cost", "Calculate item cost from measured quantity, rate, waste and optional contingency.", [
+    F("Q", "Quantity", 100, "unit", { min: 0 }),
+    F("rate", "Unit rate", 2500, "currency/unit", { min: 0 }),
+    F("waste", "Waste", 3, "%", { min: 0 }),
+    F("cont", "Contingency", 5, "%", { min: 0 }),
+  ], ({ Q, rate, waste, cont }) => {
+    const base = Q * (1 + waste / 100) * rate;
+    return [{ label: "Base cost", value: base, unit: "currency" }, { label: "With contingency", value: base * (1 + cont / 100), unit: "currency" }];
+  }, "Cost = Q(1+waste)×rate×(1+contingency)"),
+
+  tool("rebar-takeoff", "Quantities & BOQ", "Rebar takeoff", "Estimate reinforcement mass from bar diameters, counts and lengths.", [
+    F("d", "Bar diameter", 16, "mm", { min: 1 }),
+    F("count", "Number of bars", 60, "bars", { min: 1, step: 1 }),
+    F("length", "Average bar length", 7.5, "m", { min: 0 }),
+    F("waste", "Cutting/lap waste", 7, "%", { min: 0 }),
+  ], ({ d, count, length, waste }) => {
+    const base = rebarWtKgM(d) * count * length;
+    return [{ label: "Unit weight", value: rebarWtKgM(d), unit: "kg/m" }, { label: "Steel", value: base, unit: "kg" }, { label: "Order steel", value: base * (1 + waste / 100), unit: "kg" }];
+  }, "m = (d²/162) × count × length"),
+
+  tool("labor-hours", "Quantities & BOQ", "Labor hours", "Estimate labor hours from quantity, crew size and productivity.", [
+    F("Q", "Work quantity", 500, "unit", { min: 0 }),
+    F("prod", "Productivity per worker", 8, "unit/day", { min: 0.01 }),
+    F("crew", "Workers", 6, "workers", { min: 1, step: 1 }),
+    F("hours", "Hours/day", 8, "h/day", { min: 0.1 }),
+  ], ({ Q, prod, crew, hours }) => [{ label: "Crew-days", value: Q / (prod * crew), unit: "days" }, { label: "Labor hours", value: Q / (prod * crew) * crew * hours, unit: "person-hours" }], "days = Q/(prod·crew)"),
+
+  tool("unit-rate-build", "Quantities & BOQ", "Unit rate builder", "Build a composite unit rate from material, labor, plant and overhead components.", [
+    F("mat", "Material", 1200, "currency/unit", { min: 0 }),
+    F("lab", "Labor", 500, "currency/unit", { min: 0 }),
+    F("plant", "Plant", 150, "currency/unit", { min: 0 }),
+    F("oh", "Overhead", 10, "%", { min: 0 }),
+    F("profit", "Profit", 12, "%", { min: 0 }),
+  ], ({ mat, lab, plant, oh, profit }) => {
+    const direct = mat + lab + plant;
+    const overhead = direct * oh / 100;
+    const subtotal = direct + overhead;
+    return [{ label: "Direct cost", value: direct, unit: "currency/unit" }, { label: "Overhead", value: overhead, unit: "currency/unit" }, { label: "Selling unit rate", value: subtotal * (1 + profit / 100), unit: "currency/unit" }];
+  }, "Rate = (material+labor+plant)×(1+overhead)×(1+profit)"),
+
+  tool("markup-margin", "Quantities & BOQ", "Markup ↔ margin", "Convert between cost, selling price, markup and gross margin.", [
+    F("cost", "Cost", 1000, "currency", { min: 0 }),
+    F("sell", "Selling price", 1250, "currency", { min: 0.01 }),
+  ], ({ cost, sell }) => [{ label: "Markup", value: safeDiv(sell - cost, cost) * 100, unit: "%" }, { label: "Gross margin", value: safeDiv(sell - cost, sell) * 100, unit: "%" }], "Markup=(S−C)/C; Margin=(S−C)/S"),
+
+  // -----------------------------------------------------------------------
+  // SURVEY / LAYOUT / REFERENCE
+  // -----------------------------------------------------------------------
+  tool("coordinate-distance", "Survey & Layout", "Coordinate distance", "2D plan distance between two coordinate points.", [
+    F("x1", "X1", 100, "m"),
+    F("y1", "Y1", 200, "m"),
+    F("x2", "X2", 128, "m"),
+    F("y2", "Y2", 245, "m"),
+  ], ({ x1, y1, x2, y2 }) => [{ label: "Distance", value: Math.hypot(x2 - x1, y2 - y1), unit: "m" }, { label: "Azimuth from North", value: (deg(Math.atan2(x2 - x1, y2 - y1)) + 360) % 360, unit: "°" }], "D = √(ΔX²+ΔY²)"),
+
+  tool("leveling", "Survey & Layout", "Reduced level difference", "Simple leveling relation from benchmark level and observed rise/fall.", [
+    F("RL", "Known RL", 12.500, "m"),
+    F("rise", "Rise", 0.320, "m", { min: 0 }),
+    F("fall", "Fall", 0.120, "m", { min: 0 }),
+  ], ({ RL, rise, fall }) => [{ label: "New RL", value: RL + rise - fall, unit: "m" }], "RL_new = RL_known + rise − fall"),
+
+  tool("grid-count", "Survey & Layout", "Building grid count", "Estimate structural grid lines and bays from overall dimension and target spacing.", [
+    F("length", "Overall length", 60, "m", { min: 0.01 }),
+    F("spacing", "Target spacing", 6, "m", { min: 0.01 }),
+  ], ({ length, spacing }) => {
+    const bays = Math.max(1, Math.ceil(length / spacing));
+    return [{ label: "Bays", value: bays, unit: "" }, { label: "Grid lines", value: bays + 1, unit: "" }, { label: "Average bay", value: length / bays, unit: "m" }];
+  }, "bays = ceil(length/target spacing)"),
+
+  tool("bearing-azimuth", "Survey & Layout", "Bearing ↔ azimuth", "Convert a quadrant bearing entered as an azimuth angle to a simple quadrant bearing reference.", [
+    F("az", "Azimuth", 135, "°", { min: 0, max: 360 }),
+  ], ({ az }) => {
+    let a = ((az % 360) + 360) % 360;
+    let b;
+    if (a < 90) b = `N ${fmt(a,2)}° E`;
+    else if (a < 180) b = `S ${fmt(180-a,2)}° E`;
+    else if (a < 270) b = `S ${fmt(a-180,2)}° W`;
+    else b = `N ${fmt(360-a,2)}° W`;
+    return [{ label: "Bearing", value: b }, { label: "Azimuth", value: a, unit: "°" }];
+  }, "Quadrant bearing derived from azimuth"),
+
+  tool("volume-mass", "Survey & Layout", "Volume ↔ mass", "Convert material volume to mass using a specified density.", [
+    F("V", "Volume", 10, "m³", { min: 0 }),
+    F("rho", "Density", 2400, "kg/m³", { min: 0 }),
+  ], ({ V, rho }) => [{ label: "Mass", value: V * rho, unit: "kg" }, { label: "Mass", value: V * rho / 1000, unit: "t" }], "m = Vρ"),
+
+  // -----------------------------------------------------------------------
+  // ENGINEERING CHECKS / USEFUL BUILDING MATH
+  // -----------------------------------------------------------------------
+  tool("factor-safety", "Engineering Checks", "Factor of safety", "Compare resistance/capacity to demand.", [
+    F("R", "Resistance", 900, "kN", { min: 0 }),
+    F("D", "Demand", 600, "kN", { min: 0.01 }),
+  ], ({ R, D }) => [{ label: "Factor of safety", value: R / D, unit: "×" }], "FS = R/D"),
+
+  tool("utilization", "Engineering Checks", "Demand / capacity ratio", "Simple utilization check where demand divided by capacity below 1.0 indicates demand is below capacity.", [
+    F("D", "Demand", 450, "kN", { min: 0 }),
+    F("R", "Capacity", 600, "kN", { min: 0.01 }),
+  ], ({ D, R }) => [{ label: "Utilization", value: D / R, unit: "×" }, { label: "Utilization", value: D / R * 100, unit: "%" }, { label: "Status", value: D <= R ? "PASS (simplified)" : "FAIL - redesign/check" }], "U = Demand/Capacity"),
+
+  tool("combined-stress", "Engineering Checks", "Combined axial + bending stress", "Elastic extreme-fiber stress from axial load plus bending about one axis.", [
+    F("P", "Axial load", 200, "kN"),
+    F("A", "Area", 5000, "mm²", { min: 0.01 }),
+    F("M", "Moment", 30, "kN·m"),
+    F("Z", "Section modulus", 250000, "mm³", { min: 0.01 }),
+  ], ({ P, A, M, Z }) => [{ label: "Axial stress", value: P * 1000 / A, unit: "MPa" }, { label: "Bending stress", value: M * 1e6 / Z, unit: "MPa" }, { label: "Max compression", value: P * 1000 / A + M * 1e6 / Z, unit: "MPa" }, { label: "Opposite extreme", value: P * 1000 / A - M * 1e6 / Z, unit: "MPa" }], "σ = P/A ± M/Z"),
+
+  tool("thermal-expansion", "Engineering Checks", "Thermal movement", "Linear thermal expansion of a building member or jointed element.", [
+    F("L", "Original length", 30, "m", { min: 0 }),
+    F("alpha", "Coefficient", 10e-6, "/°C", { min: 0 }),
+    F("dT", "Temperature change", 35, "°C"),
+  ], ({ L, alpha, dT }) => [{ label: "Expansion", value: L * alpha * dT * 1000, unit: "mm" }, { label: "Strain", value: alpha * dT, unit: "" }], "ΔL = αLΔT"),
+
+  tool("concrete-shrinkage", "Engineering Checks", "Shrinkage movement", "Estimate movement from an assumed shrinkage strain.", [
+    F("L", "Member length", 30, "m", { min: 0 }),
+    F("eps", "Shrinkage strain", 0.0004, ""),
+  ], ({ L, eps }) => [{ label: "Movement", value: L * eps * 1000, unit: "mm" }], "ΔL = εsh·L"),
+
+  tool("bearing-capacity-util", "Engineering Checks", "Bearing pressure utilization", "Compare service bearing pressure with allowable bearing pressure.", [
+    F("q", "Calculated pressure", 120, "kPa", { min: 0 }),
+    F("qa", "Allowable pressure", 150, "kPa", { min: 0.01 }),
+  ], ({ q, qa }) => [{ label: "Utilization", value: q / qa * 100, unit: "%" }, { label: "Status", value: q <= qa ? "PASS (screening)" : "EXCEEDS allowable" }], "U = q/qa"),
+
+  tool("deflection-limit", "Engineering Checks", "Deflection limit", "Compare calculated deflection to an entered span ratio limit.", [
+    F("L", "Span", 6, "m", { min: 0.01 }),
+    F("limit", "Limit denominator", 360, "L/", { min: 1 }),
+    F("delta", "Calculated deflection", 12, "mm", { min: 0 }),
+  ], ({ L, limit, delta }) => { const allowed = L * 1000 / limit; return [{ label: "Allowed deflection", value: allowed, unit: "mm" }, { label: "Utilization", value: delta / allowed * 100, unit: "%" }, { label: "Status", value: delta <= allowed ? "PASS (user-selected limit)" : "EXCEEDS limit" }]; }, "δallow = L/limit"),
+  // -----------------------------------------------------------------------
+  // ADDITIONAL BUILDING-STRUCTURE WORKFLOWS
+  // -----------------------------------------------------------------------
+  tool("slab-to-beam-line", "Loads & Load Paths", "Slab area load → beam line load", "Convert a tributary slab width and area load to a beam line load.", [
+    F("w", "Slab load", 6, "kN/m²", { min: 0 }),
+    F("trib", "Tributary width", 3, "m", { min: 0 }),
+  ], ({ w, trib }) => [{ label: "Beam line load", value: w * trib, unit: "kN/m" }], "w_beam = w_slab × tributary width"),
+
+  tool("column-tributary-load", "Loads & Load Paths", "Column tributary load", "Estimate column load from a rectangular tributary area and floor load.", [
+    F("A", "Tributary area", 30, "m²", { min: 0 }),
+    F("w", "Floor load", 6, "kN/m²", { min: 0 }),
+    F("floors", "Number of floors", 4, "floors", { min: 1, step: 1 }),
+  ], ({ A, w, floors }) => [{ label: "Load per floor", value: A * w, unit: "kN" }, { label: "Total floor load", value: A * w * floors, unit: "kN" }], "P = Atributary × w × floors"),
+
+  tool("footing-punching", "Reinforced Concrete", "Footing punching stress", "Average punching shear stress using an entered critical perimeter around a column.", [
+    F("Vu", "Punching shear", 650, "kN", { min: 0 }),
+    F("u", "Critical perimeter", 5.2, "m", { min: 0.01 }),
+    F("d", "Effective depth", 350, "mm", { min: 1 }),
+  ], ({ Vu, u, d }) => [{ label: "Punching stress", value: Vu * 1000 / (u * 1000 * d), unit: "MPa" }], "v = Vu/(u·d)"),
+
+  tool("footing-oneway-shear", "Reinforced Concrete", "Footing one-way shear stress", "Preliminary one-way shear stress at a critical section near a column/footing edge.", [
+    F("Vu", "Shear", 500, "kN", { min: 0 }),
+    F("B", "Footing width", 2.5, "m", { min: 0.01 }),
+    F("d", "Effective depth", 350, "mm", { min: 1 }),
+  ], ({ Vu, B, d }) => [{ label: "Shear stress", value: Vu * 1000 / (B * 1000 * d), unit: "MPa" }], "v = Vu/(b·d)"),
+
+  tool("column-interaction", "Reinforced Concrete", "Axial + moment utilization", "Simple normalized interaction screening from axial and moment demand ratios.", [
+    F("Pu", "Axial demand", 800, "kN", { min: 0 }),
+    F("Pn", "Axial reference capacity", 1600, "kN", { min: 0.01 }),
+    F("Mu", "Moment demand", 120, "kN·m", { min: 0 }),
+    F("Mn", "Moment reference capacity", 300, "kN·m", { min: 0.01 }),
+  ], ({ Pu, Pn, Mu, Mn }) => [{ label: "Axial ratio", value: Pu / Pn, unit: "×" }, { label: "Moment ratio", value: Mu / Mn, unit: "×" }, { label: "Interaction", value: Pu / Pn + Mu / Mn, unit: "×" }, { label: "Status", value: Pu / Pn + Mu / Mn <= 1 ? "PASS (screening)" : "CHECK" }], "Interaction = Pu/Pn + Mu/Mn"),
+
+  tool("wall-slenderness", "Masonry & Building Fabric", "Wall slenderness", "Geometric slenderness ratio from clear unsupported height and thickness.", [
+    F("h", "Unsupported height", 3, "m", { min: 0.01 }),
+    F("t", "Wall thickness", 0.115, "m", { min: 0.001 }),
+  ], ({ h, t }) => [{ label: "Slenderness ratio", value: h / t, unit: "" }], "λ = h/t; allowable limits are code/material dependent"),
+
+  tool("lintel-load", "Masonry & Building Fabric", "Lintel line load", "Approximate masonry line load over an opening using a tributary wall height.", [
+    F("t", "Wall thickness", 0.115, "m", { min: 0 }),
+    F("h", "Tributary masonry height", 1.5, "m", { min: 0 }),
+    F("gamma", "Masonry unit weight", 18, "kN/m³", { min: 0 }),
+    F("additional", "Additional load", 2, "kN/m", { min: 0 }),
+  ], ({ t, h, gamma, additional }) => [{ label: "Lintel line load", value: t * h * gamma + additional, unit: "kN/m" }], "w = t·h·γ + additional load"),
+
+  tool("parapet-load", "Masonry & Building Fabric", "Parapet line load", "Wall/parapet self-weight per metre length.", [
+    F("t", "Parapet thickness", 0.115, "m", { min: 0 }),
+    F("h", "Parapet height", 1.0, "m", { min: 0 }),
+    F("gamma", "Unit weight", 18, "kN/m³", { min: 0 }),
+  ], ({ t, h, gamma }) => [{ label: "Line load", value: t * h * gamma, unit: "kN/m" }], "w = t·h·γ"),
+
+  tool("baseplate-bearing", "Steel & Structural Mechanics", "Base-plate bearing", "Average steel/concrete interface pressure from axial force and bearing area.", [
+    F("P", "Axial force", 800, "kN", { min: 0 }),
+    F("B", "Plate width", 300, "mm", { min: 1 }),
+    F("L", "Plate length", 300, "mm", { min: 1 }),
+  ], ({ P, B, L }) => [{ label: "Average bearing stress", value: P * 1000 / (B * L), unit: "MPa" }], "q = P/(B·L)"),
+
+  tool("anchor-tension", "Steel & Structural Mechanics", "Anchor bolt tension stress", "Average tensile stress in an anchor bolt from applied tension.", [
+    F("T", "Tension per bolt", 40, "kN", { min: 0 }),
+    F("n", "Number of bolts", 4, "bolts", { min: 1, step: 1 }),
+    F("d", "Bolt diameter", 20, "mm", { min: 1 }),
+  ], ({ T, n, d }) => [{ label: "Tension per bolt", value: T / n, unit: "kN" }, { label: "Average tensile stress", value: T * 1000 / (n * rebarDia(d)), unit: "MPa" }], "σ = T/(n·πd²/4)"),
+
+  tool("roof-drainage", "Building Geometry", "Roof drainage volume", "Estimate runoff volume from roof area, rainfall depth and runoff coefficient.", [
+    F("A", "Roof area", 500, "m²", { min: 0 }),
+    F("rain", "Rainfall depth", 50, "mm", { min: 0 }),
+    F("C", "Runoff coefficient", 0.9, "×", { min: 0, max: 1 }),
+  ], ({ A, rain, C }) => [{ label: "Runoff volume", value: A * rain / 1000 * C, unit: "m³" }, { label: "Litres", value: A * rain * C, unit: "L" }], "V = A·rain(m)·C"),
+
+];
+
+
+const REFERENCES = [
+  ["Beam UDL", "Mmax = wL²/8; Vmax = wL/2 for a simply supported beam."],
+  ["Center point load", "Mmax = PL/4 and reactions = P/2 for a centered point load."],
+  ["Elastic bending", "σ = M/Z. Keep units consistent, e.g. N·mm / mm³ = N/mm²."],
+  ["Euler buckling", "Pcr = π²EI/(KL)² for ideal elastic buckling conditions."],
+  ["Foundation pressure", "Average q = P/A; eccentric loading requires a nonuniform pressure model."],
+  ["Rankine active pressure", "Ka = tan²(45°−φ/2), with Pa ≈ 0.5KaγH² for simple level backfill."],
+  ["Thermal movement", "ΔL = αLΔT; actual restraint can create significant thermal force."],
+  ["Rebar weight", "The common metric estimate d²/162 gives kg/m when d is in millimetres."],
+  ["Building load path", "Roof/floor → beams/girders → columns/walls → foundations → soil."],
+  ["Wind", "Code wind pressure is more than 0.5ρV²; exposure, directionality, gust and coefficients matter."],
+  ["Seismic", "Base shear and vertical distribution are code/site/system dependent; use hazard and site data."],
+  ["Serviceability", "Strength alone is not enough: deflection, vibration, cracking, drift and durability also matter."],
+];
+
+const CATEGORIES = [...new Set(TOOLS.map(t => t.category))];
+const state = {
+  category: CATEGORIES[0],
+  search: "",
+  toolId: TOOLS[0].id,
+};
+
+function byId(id) {
+  return document.getElementById(id);
+}
+
+function notify(message, type = "ok") {
+  const el = document.createElement("div");
+  el.className = `toast ${type}`;
+  el.textContent = message;
+  byId("toasts").appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+function filteredTools() {
+  const q = state.search.trim().toLowerCase();
+  return TOOLS.filter((t) => {
+    const categoryMatch = t.category === state.category;
+    if (!categoryMatch) return false;
+    if (!q) return true;
+    return `${t.title} ${t.description} ${t.formula} ${t.notes}`.toLowerCase().includes(q);
+  });
+}
+
+function visibleAllTools() {
+  const q = state.search.trim().toLowerCase();
+  if (!q) return TOOLS.filter(t => t.category === state.category);
+  return TOOLS.filter(t => `${t.title} ${t.description} ${t.category} ${t.formula}`.toLowerCase().includes(q));
+}
+
+function setCategory(category) {
+  state.category = category;
+  const first = visibleAllTools()[0] || TOOLS.find(t => t.category === category);
+  state.toolId = first?.id || TOOLS[0].id;
+  renderNav();
+  renderSectionSelect();
+  renderToolList();
+  renderTool();
+}
+
+function renderNav() {
+  const host = byId("categoryList");
+  host.replaceChildren();
+
+  CATEGORIES.forEach(category => {
+    const button = document.createElement("button");
+    button.className = `category-btn ${category === state.category ? "active" : ""}`;
+    button.type = "button";
+    const count = TOOLS.filter(t => t.category === category).length;
+    button.innerHTML = `<span>${category}</span><span class="category-count">${count}</span>`;
+    button.addEventListener("click", () => setCategory(category));
+    host.appendChild(button);
+  });
+}
+
+function renderSectionSelect() {
+  const select = byId("sectionSelect");
+  select.replaceChildren();
+  CATEGORIES.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    option.selected = category === state.category;
+    select.appendChild(option);
+  });
+}
+
+function renderToolSelect() {
+  const select = byId("toolSelect");
+  select.replaceChildren();
+  const tools = visibleAllTools();
+  tools.forEach(t => {
+    const option = document.createElement("option");
+    option.value = t.id;
+    option.textContent = `${t.title} · ${t.category}`;
+    option.selected = t.id === state.toolId;
+    select.appendChild(option);
+  });
+  select.disabled = !tools.length;
+}
+
+function renderToolList() {
+  // The main calculator is selected from a compact jump list in the title area.
+  const list = byId("toolIndex");
+  const tools = visibleAllTools();
+  list.textContent = `${tools.length} tool${tools.length === 1 ? "" : "s"}`;
+  renderToolSelect();
+}
+
+function getCurrentTool() {
+  return TOOLS.find(t => t.id === state.toolId) || TOOLS[0];
+}
+
+function renderTool() {
+  const t = getCurrentTool();
+  byId("toolCategory").textContent = t.category;
+  byId("toolTitle").textContent = t.title;
+  byId("toolDescription").textContent = t.description;
+  byId("formula").textContent = `${t.formula}${t.notes ? `\n\nNotes: ${t.notes}` : ""}`;
+  byId("formula").classList.remove("hidden");
+
+  const host = byId("toolInputs");
+  host.replaceChildren();
+  const grid = document.createElement("div");
+  grid.className = `input-grid ${t.fields.length <= 2 ? "cols-2" : t.fields.length >= 8 ? "cols-4" : ""}`;
+
+  t.fields.forEach(field => {
+    const wrap = document.createElement("div");
+    wrap.className = "field";
+
+    const label = document.createElement("label");
+    label.textContent = field.unit ? `${field.label} (${field.unit})` : field.label;
+    label.htmlFor = `input-${field.key}`;
+    wrap.appendChild(label);
+
+    let input;
+    if (field.type === "select") {
+      input = document.createElement("select");
+      field.choices.forEach(([value, text]) => {
+        const o = document.createElement("option");
+        o.value = value;
+        o.textContent = text;
+        input.appendChild(o);
+      });
+      input.value = field.def;
+    } else {
+      input = document.createElement("input");
+      input.type = "number";
+      input.inputMode = "decimal";
+      input.step = field.step;
+      if (field.min !== undefined) input.min = field.min;
+      if (field.max !== undefined) input.max = field.max;
+      input.value = field.def;
+    }
+    input.id = `input-${field.key}`;
+    input.dataset.key = field.key;
+    wrap.appendChild(input);
+
+    if (field.hint) {
+      const p = document.createElement("p");
+      p.className = "hint";
+      p.textContent = field.hint;
+      wrap.appendChild(p);
+    }
+    grid.appendChild(wrap);
+  });
+  host.appendChild(grid);
+
+  calculateCurrent();
+}
+
+function readFields(t) {
+  const values = {};
+  for (const field of t.fields) {
+    const el = byId(`input-${field.key}`);
+    if (field.type === "select") {
+      values[field.key] = el.value;
+    } else {
+      values[field.key] = n(el.value, Number(field.def) || 0);
+    }
+  }
+  return values;
+}
+
+function renderResults(outputs) {
+  const host = byId("results");
+  host.replaceChildren();
+
+  outputs.forEach((out, i) => {
+    const card = document.createElement("div");
+    card.className = `result-card ${i === 0 ? "primary" : ""}`;
+    const label = document.createElement("div");
+    label.className = "result-label";
+    label.textContent = out.label;
+    const value = document.createElement("div");
+    value.className = "result-value";
+    value.textContent = `${typeof out.value === "number" ? fmt(out.value, 4) : out.value}${out.unit ? ` ${out.unit}` : ""}`;
+    card.append(label, value);
+    host.appendChild(card);
+  });
+}
+
+function calculateCurrent() {
+  const t = getCurrentTool();
+  try {
+    const values = readFields(t);
+    const outputs = t.calc(values);
+    if (!Array.isArray(outputs) || !outputs.length) throw new Error("No result produced.");
+    if (outputs.some(o => typeof o.value === "number" && !Number.isFinite(o.value))) {
+      throw new Error("Invalid numeric result. Check inputs.");
+    }
+    renderResults(outputs);
+  } catch (error) {
+    renderResults([{ label: "Error", value: error?.message || "Unable to calculate" }]);
+  }
+}
+
+function resetTool() {
+  renderTool();
+}
+
+function copyText(text) {
+  if (navigator.clipboard?.writeText) {
+    return navigator.clipboard.writeText(text);
+  }
+  return Promise.reject(new Error("Clipboard unavailable"));
+}
+
+function buildReport() {
+  const t = getCurrentTool();
+  const outputs = [...byId("results").querySelectorAll(".result-card")].map(card => card.textContent.trim());
+  return [
+    "Aznur Civil Studio",
+    `Calculator: ${t.title}`,
+    `Category: ${t.category}`,
+    `Formula: ${t.formula}`,
+    ...outputs,
+    `Notes: ${t.notes || ""}`,
+    `Project notes: ${byId("projectNotes").value || ""}`,
+  ].join("\n");
+}
+
+function saveProject() {
+  const payload = {
+    state,
+    notes: byId("projectNotes").value,
+    toolInputs: Object.fromEntries([...document.querySelectorAll("#toolInputs input, #toolInputs select")].map(el => [el.dataset.key, el.value])),
+  };
+  localStorage.setItem("aznur-civil-project", JSON.stringify(payload));
+  notify("Project saved in this browser.");
+}
+
+function loadProject() {
+  try {
+    const payload = JSON.parse(localStorage.getItem("aznur-civil-project") || "null");
+    if (!payload) throw new Error("No saved project found.");
+    if (CATEGORIES.includes(payload.state?.category)) state.category = payload.state.category;
+    if (TOOLS.some(t => t.id === payload.state?.toolId)) state.toolId = payload.state.toolId;
+    state.search = payload.state?.search || "";
+    byId("search").value = state.search;
+    byId("projectNotes").value = payload.notes || "";
+    renderNav();
+    renderSectionSelect();
+    renderToolList();
+    renderTool();
+    Object.entries(payload.toolInputs || {}).forEach(([key, value]) => {
+      const el = byId(`input-${key}`);
+      if (el) el.value = value;
+    });
+    calculateCurrent();
+    notify("Saved project loaded.");
+  } catch (error) {
+    notify(error.message || "Could not load project.", "warn");
+  }
+}
+
+function renderReferences() {
+  const host = byId("references");
+  REFERENCES.forEach(([title, body]) => {
+    const card = document.createElement("div");
+    card.className = "reference";
+    const h = document.createElement("h4");
+    h.textContent = title;
+    const p = document.createElement("p");
+    p.textContent = body;
+    card.append(h, p);
+    host.appendChild(card);
+  });
+}
+
+if (typeof document !== "undefined") {
+  byId("sectionSelect").addEventListener("change", e => setCategory(e.target.value));
+  byId("toolSelect").addEventListener("change", e => {
+    if (TOOLS.some(t => t.id === e.target.value)) {
+      state.toolId = e.target.value;
+      state.category = getCurrentTool().category;
+      renderNav();
+      renderSectionSelect();
+      renderToolList();
+      renderTool();
+    }
+  });
+  byId("search").addEventListener("input", e => {
+    state.search = e.target.value;
+    const matches = visibleAllTools();
+    if (matches.length && !matches.some(t => t.id === state.toolId)) {
+      state.toolId = matches[0].id;
+    }
+    if (matches.length && matches[0].category !== state.category && state.search.trim()) {
+      state.category = matches[0].category;
+      renderNav();
+      renderSectionSelect();
+    }
+    renderToolList();
+    renderTool();
+  });
+
+  byId("calculate").addEventListener("click", calculateCurrent);
+  byId("resetTool").addEventListener("click", resetTool);
+  byId("copyFormula").addEventListener("click", () => {
+    copyText(getCurrentTool().formula).then(() => notify("Formula copied.")).catch(() => notify("Clipboard unavailable.", "warn"));
+  });
+  byId("copyReport").addEventListener("click", () => {
+    copyText(buildReport()).then(() => notify("Results copied.")).catch(() => notify("Clipboard unavailable.", "warn"));
+  });
+  byId("printReport").addEventListener("click", () => window.print());
+  byId("saveProject").addEventListener("click", saveProject);
+  byId("loadProject").addEventListener("click", loadProject);
+  byId("clearProject").addEventListener("click", () => {
+    localStorage.removeItem("aznur-civil-project");
+    notify("Saved project cleared.");
+  });
+
+  renderNav();
+  renderSectionSelect();
+  renderToolList();
+  renderTool();
+  renderReferences();
+}
+
+if (typeof window !== "undefined") {
+  window.AZNUR_CIVIL_TOOLS = TOOLS;
+}
+</script>
+</body>
+</html>
